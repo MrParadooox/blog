@@ -1,0 +1,88 @@
+use blog;
+create function CountComment(id int)
+RETURNS int 
+RETURN (
+    SELECT count(idRecord)
+    from `comentTable`
+    where idRecord=id
+)
+create function Countlike(id int)
+RETURNS int 
+RETURN (
+    SELECT count(idRecord)
+    from `likeTable`
+    where idRecord=id
+)
+create function CountDislike(id int)
+RETURNS int 
+RETURN (
+    SELECT count(idRecord)
+    from `disLikeTable`
+    where idRecord=id
+)
+Use blog;
+SELECT idAutor, `date`, `text`, CountLike(id), countDisLike(id), CountComment(id) 
+from `record`;
+
+Use blog;
+SELECT idAutor, `date`, `text`, CountLike(id), countDisLike(id), CountComment(id) 
+from `posts`
+RIGHT join `users`
+on `users`.id=`posts`.;
+
+
+Use blog;
+SELECT `datetime`, `caption`, Countlike(id), countDislike(id), CountComment(id) 
+from `posts`;
+
+---вот норм. 
+Use blog;
+SELECT `users`.Nick as Nick, `datetime`, `caption`, Countlike(`posts`.id) as `Like`, CountDislike(`posts`.id) as `DisLike`, CountComment(`posts`.id) as `Comment`
+from `posts`
+left join `users`
+on `users`.`id`=`posts`.`UserID`;
+
+
+--------------------------
+
+SELECT id.r, autor.u, data.r, text.r, count (Text.c) as coment from record as r full join comment as c on id.r = id.record.c
+group by id.r
+
+https://www.php.net/manual/ru/function.stripos.php
+
+CREATE VIEW `categorys`
+
+SELECT `id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder`, count(`coments`.`PostId`), count(`like`.`likes`), count(`like`.`Dislike`)
+from `posts`
+left JOIN `coments` on `posts`.`id`=`coments`.`PostId` 
+left JOIN `like` on `posts`.`id`=`like`.`PostId`
+GROUP by `id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder` 
+ORDER by `datetime` DESC
+
+
+--------------------------
+
+SELECT `id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder`, count(`coments`.`PostId`), count(`like`.`likes`), count(`like`.`Dislike`)
+from `posts`
+left JOIN `coments` on `posts`.`id`=`coments`.`PostId` 
+left JOIN `like` on `posts`.`id`=`like`.`PostId`
+GROUP by `id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder` 
+ORDER by `datetime` DESC
+
+
+=====================
+остання вюшка
+
+SELECT `posts`.`id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder`, `Nick`, count(`coments`.`PostId`) as 'Comment' , count(`like`.`likes`) as 'Like' , count(`like`.`Dislike`) as 'DisLike'
+from `posts`
+left join `users` on `posts`.`UserID` = `users`.`id`
+left JOIN `coments` on `posts`.`id`=`coments`.`PostId` 
+left JOIN `like` on `posts`.`id`=`like`.`PostId`
+GROUP by `id`,`headline`,`category`,`caption`,`path`,`datetime`,`Nick`, `moder` 
+ORDER by `datetime` DESC 
+
+
+
+
+----------------------------
+CREATE VIEW newV (`id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder`, `Nick`,`Comment`,`Like`, `DisLike`) as SELECT `posts`.`id`,`headline`,`category`,`caption`,`path`,`datetime`,`moder`, `Nick`, count(`coments`.`PostId`), count(`like`.`likes`), count(`like`.`Dislike`) from `posts` left join `users` on `posts`.`UserID` = `users`.`id` left JOIN `coments` on `posts`.`id`=`coments`.`PostId` left JOIN `like` on `posts`.`id`=`like`.`PostId` GROUP by `id`,`headline`,`category`,`caption`,`path`,`datetime`,`Nick`, `moder`
